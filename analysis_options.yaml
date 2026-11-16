@@ -1,0 +1,156 @@
+analyzer:
+  # Enable stronger analysis
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+  # Language features to enable
+  language:
+    strict-casts: true
+    strict-inference: true
+
+  errors:
+    depend_on_referenced_packages: ignore
+    # Treat analysis issues as warnings during development
+    missing_required_param: warning
+    missing_return: warning
+    unused_element: warning
+    unused_import: warning
+    unused_local_variable: warning
+
+  # Exclude generated files and third-party code from analysis
+  exclude:
+    # Vendored clone of the alghwalbi_dropdown package, kept byte-identical
+    # to its source; analyzed under that package's own (less strict) config.
+    - "lib/core/widgets/custom_dropdown/**"
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gr.dart"
+    - "build/**"
+    - ".dart_tool/**"
+    - "lib/generated/**"
+    - "ios/**"
+    - "android/**"
+    - "windows/**"
+    - "linux/**"
+    - "macos/**"
+
+linter:
+  rules:
+    # ---------- STYLE RULES ----------
+    # Code formatting and style preferences
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+    prefer_relative_imports: true
+    unnecessary_this: true
+    curly_braces_in_flow_control_structures: true
+    lines_longer_than_80_chars: false # Allow longer lines for readability
+    prefer_is_empty: true
+    prefer_is_not_empty: true
+    avoid_init_to_null: true
+    avoid_renaming_method_parameters: true
+    avoid_return_types_on_setters: true
+    avoid_single_cascade_in_expression_statements: true
+    avoid_types_as_parameter_names: true
+    camel_case_types: true
+    constant_identifier_names: true
+    library_names: true
+    library_prefixes: true
+    non_constant_identifier_names: false # Disabled for flexibility
+    prefer_adjacent_string_concatenation: true
+    prefer_collection_literals: true
+    prefer_conditional_assignment: true
+    prefer_expression_function_bodies: true
+    prefer_interpolation_to_compose_strings: true
+
+    # ---------- ERROR PREVENTION RULES ----------
+    # Rules that help prevent common errors
+    avoid_print: true # Use logging instead of print in production
+    empty_catches: true # Prevent empty catch blocks that swallow errors
+    unnecessary_null_checks: true
+    null_closures: true
+    avoid_catching_errors: true
+    avoid_double_and_int_checks: true
+    avoid_empty_else: true
+    avoid_equals_and_hash_code_on_mutable_classes: true
+    avoid_function_literals_in_foreach_calls: true
+    avoid_implementing_value_types: true
+    avoid_null_checks_in_equality_operators: true
+    avoid_relative_lib_imports: true
+    avoid_returning_null_for_void: true
+    avoid_setters_without_getters: true
+    avoid_shadowing_type_parameters: true
+    avoid_type_to_string: true
+    avoid_unnecessary_containers: true
+    avoid_void_async: true
+    cancel_subscriptions: true
+    close_sinks: true
+    comment_references: true
+    control_flow_in_finally: true
+    empty_statements: true
+    no_adjacent_strings_in_list: true
+    no_duplicate_case_values: true
+    no_runtimeType_toString: true
+    prefer_asserts_in_initializer_lists: true
+    prefer_foreach: true
+    prefer_generic_function_type_aliases: true
+    prefer_initializing_formals: true
+    prefer_inlined_adds: true
+    prefer_iterable_whereType: true
+    prefer_mixin: true
+    prefer_null_aware_operators: true
+    prefer_spread_collections: true
+    prefer_void_to_null: true
+    provide_deprecation_message: true
+    test_types_in_equals: true
+    throw_in_finally: true
+    type_init_formals: true
+    unawaited_futures: true
+    unnecessary_await_in_return: true
+    unnecessary_brace_in_string_interps: true
+    unnecessary_const: true
+    unnecessary_getters_setters: true
+    unnecessary_lambdas: true
+    unnecessary_new: true
+    unnecessary_nullable_for_final_variable_declarations: true
+    unnecessary_overrides: true
+    unnecessary_parenthesis: true
+    unnecessary_statements: true
+    unnecessary_string_escapes: true
+    unnecessary_string_interpolations: true
+    use_build_context_synchronously: true # Important for Flutter
+    use_full_hex_values_for_flutter_colors: true
+    use_function_type_syntax_for_parameters: true
+    use_rethrow_when_possible: true
+    use_setters_to_change_properties: true
+    use_string_buffers: true
+    use_to_and_as_if_applicable: true
+    valid_regexps: true
+
+# Dart Code Metrics configuration for additional static analysis
+dart_code_metrics:
+  metrics:
+    cyclomatic-complexity: 20
+    number-of-parameters: 4
+    maximum-nesting-level: 5
+  metrics-exclude:
+    - test/**
+  rules:
+    - no-boolean-literal-compare
+    - no-empty-block
+    - prefer-trailing-comma
+    - no-magic-number
+    - member-ordering:
+        order:
+          - constructors
+          - public-fields
+          - private-fields
+          - public-methods
+          - private-methods
+    - avoid-global-state
+    - avoid-unused-parameters
+    - no-equal-then-else
