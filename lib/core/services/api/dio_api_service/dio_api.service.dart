@@ -12,20 +12,14 @@ class DioApiService implements IApiService {
   bool _cacheInitialized = false;
 
   DioApiService({
-    required Dio dio,
-    required IApiServiceHelpers apiServiceHelper,
-    required DioApiCancelTokenManagerService cancelTokenManager,
-    required int connectionTimeout,
-    required int receiveTimeout,
-    required int sendTimeout,
-    bool enableCache = false,
-  }) : _dio = dio,
-       _apiServiceHelper = apiServiceHelper,
-       _cancelTokenManager = cancelTokenManager,
-       _sendTimeout = sendTimeout,
-       _receiveTimeout = receiveTimeout,
-       _connectionTimeout = connectionTimeout,
-       _enableCache = enableCache {
+    required this._dio,
+    required this._apiServiceHelper,
+    required this._cancelTokenManager,
+    required this._connectionTimeout,
+    required this._receiveTimeout,
+    required this._sendTimeout,
+    this._enableCache = false,
+  }) {
     // Configure default Dio options
     _dio.options = BaseOptions(
       connectTimeout: Duration(seconds: _connectionTimeout),
@@ -581,7 +575,7 @@ class DioApiService implements IApiService {
     void Function(int, int)? onSendProgress,
     required String formFieldKeyName,
     List<String>? additionalFields,
-    final bool? usedForSnagsUpload,
+    bool? usedForSnagsUpload,
   }) async {
     final cancelToken = _cancelTokenManager.createToken(
       pageKey: currentPageKeyForCancelTokens,
@@ -755,7 +749,11 @@ class DioApiService implements IApiService {
 
     if (value is List) {
       for (int i = 0; i < value.length; i++) {
-        await _addStructuredValueToFormData(formData, '$valuePath[$i]', value[i]);
+        await _addStructuredValueToFormData(
+          formData,
+          '$valuePath[$i]',
+          value[i],
+        );
       }
       return;
     }

@@ -1,25 +1,30 @@
 library;
 
 /// Imports
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
+// toastification still exposes legacy Material types in its public API.
+// Remove once it migrates to material_ui.
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as legacy_material;
 import 'package:flutter/foundation.dart';
+
 import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' as widgets_import;
 import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:http_cache_hive_store/http_cache_hive_store.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http_parser/http_parser.dart';
+
 import 'dart:convert';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:mime/mime.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path_package;
@@ -27,22 +32,29 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shimmer/shimmer.dart';
+
 import 'dart:developer' as developer;
+
 import 'package:syncfusion_flutter_charts/charts.dart' as syncfusion_charts;
 import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
+
 import 'dart:ui' as ui;
 import 'dart:async';
 import 'dart:io';
+
 import 'core/widgets/custom_dropdown/custom_dropdown.dart';
 export 'core/widgets/custom_dropdown/custom_dropdown.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
+
 import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -88,7 +100,6 @@ part 'core/services/api/api_service_helpers.interface.dart';
 part 'core/services/api/api_service.interface.dart';
 part 'core/services/api/dio_api_service/dio_api_cancel_token_manager.service.dart';
 part 'core/services/api/dio_api_service/dio_api.service.dart';
-part 'core/services/api/http_api_service/http_api.service.dart';
 part 'core/services/internet_connection/internet_connection.service.dart';
 part 'core/services/push_notifications/push_notifications.service.dart';
 

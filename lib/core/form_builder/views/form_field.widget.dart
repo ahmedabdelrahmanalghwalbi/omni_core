@@ -235,7 +235,8 @@ class FormFieldWidget extends StatefulWidget {
     dateTimeFieldConfirmText: dateTimeFieldConfirmText,
     dateTimeFieldInvalidDateFormatText: dateTimeFieldInvalidDateFormatText,
     dateTimeFieldOutOfRangeDateText: dateTimeFieldOutOfRangeDateText,
-    dateTimeFieldOnPickeingDateTimeFailed: dateTimeFieldOnPickeingDateTimeFailed,
+    dateTimeFieldOnPickeingDateTimeFailed:
+        dateTimeFieldOnPickeingDateTimeFailed,
     radioGroupFieldOptionTextStyle: radioGroupFieldOptionTextStyle,
     radioGroupFieldInActiveColor: radioGroupFieldInActiveColor,
     radioGroupFieldRadioSize: radioGroupFieldRadioSize,
@@ -651,7 +652,8 @@ class _FormFieldWidgetState extends State<FormFieldWidget> {
           crossAxisAlignment: widget.crossAxisAlignment,
           fieldHintStyle: widget.fieldHintStyle,
           opacity: widget.dropdownFieldOpacity,
-          showValidationMessage: widget.showValidationMessageForInputsFieldsOnly,
+          showValidationMessage:
+              widget.showValidationMessageForInputsFieldsOnly,
           onChanged: (value) {
             if (multiSelectFormField.key?.isNotEmpty ?? false) {
               widget.onChanged(multiSelectFormField.key!, value);
@@ -1187,8 +1189,8 @@ class _FormFieldWidgetState extends State<FormFieldWidget> {
                 widget.onRepeatingGroupDeleteItem!(groupKey!, itemIndex),
       onItemExpandedChanged: widget.onRepeatingGroupItemExpandedChanged == null
           ? null
-          : (itemIndex, isExpanded) => widget
-                .onRepeatingGroupItemExpandedChanged!(
+          : (itemIndex, isExpanded) =>
+                widget.onRepeatingGroupItemExpandedChanged!(
                   groupKey!,
                   itemIndex,
                   isExpanded,

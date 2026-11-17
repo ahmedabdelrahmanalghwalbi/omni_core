@@ -4,13 +4,14 @@
 
 **A production-ready Flutter foundation: networking, push notifications, device utilities, reusable UI, and a schema-driven dynamic form engine, all in one package.**
 
-[![Version](https://img.shields.io/badge/version-2.1.0-0A66C2?style=for-the-badge)](CHANGELOG.md)
-[![Dart](https://img.shields.io/badge/Dart-%5E3.8.1-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Flutter](https://img.shields.io/badge/Flutter-Package-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Version](https://img.shields.io/badge/version-2.0.0-0A66C2?style=for-the-badge)](CHANGELOG.md)
+[![Dart](https://img.shields.io/badge/Dart-%5E3.13.0-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.47.0-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Material](https://img.shields.io/badge/UI-material__ui-757575?style=for-the-badge)](#material-ui-setup)
 [![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS-3DDC84?style=for-the-badge)](#requirements)
 [![License](https://img.shields.io/badge/license-MIT-F7B93E?style=for-the-badge)](LICENSE)
 
-[Features](#features) &nbsp;•&nbsp; [Installation](#installation) &nbsp;•&nbsp; [Quick start](#quick-start) &nbsp;•&nbsp; [Form Builder](#form-builder) &nbsp;•&nbsp; [API reference](#api-reference)
+[Features](#features) &nbsp;•&nbsp; [Installation](#installation) &nbsp;•&nbsp; [Quick start](#quick-start) &nbsp;•&nbsp; [Upgrading to 2.0](#upgrading-to-20) &nbsp;•&nbsp; [Form Builder](#form-builder) &nbsp;•&nbsp; [API reference](#api-reference)
 
 </div>
 
@@ -26,6 +27,8 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Quick start](#quick-start)
+  - [Material UI setup](#material-ui-setup)
+- [Upgrading to 2.0](#upgrading-to-20)
 - [Networking](#networking)
   - [Setting up `DioApiService`](#setting-up-dioapiservice)
   - [Making requests](#making-requests)
@@ -41,10 +44,12 @@
   - [Visibility rules](#visibility-rules)
   - [Calculated fields](#calculated-fields)
   - [Repeating groups](#repeating-groups)
+- [PDF annotation](#pdf-annotation)
 - [Utilities](#utilities)
 - [Widgets](#widgets)
 - [API reference](#api-reference)
 - [Project structure](#project-structure)
+- [Troubleshooting](#troubleshooting)
 - [License](#license)
 
 ---
@@ -56,7 +61,7 @@
 <td width="50%" valign="top">
 
 ### Networking
-- Unified `IApiService` contract with **Dio** and **http** implementations
+- Unified `IApiService` contract with a **Dio** implementation
 - Typed results through `OperationResult<T>`
 - Five per-request **caching strategies** backed by Hive
 - Per-page **request cancellation**
@@ -79,7 +84,7 @@
 <td width="50%" valign="top">
 
 ### Platform services
-- **Firebase Cloud Messaging** lifecycle (permissions, token registration, listeners)
+- **Firebase Cloud Messaging** lifecycle (permissions, FID registration and refresh, listeners)
 - App icon **badge** management
 - **Location**, **camera** and permission flows with user-facing dialogs
 - Reverse **geocoding** with provider fallback
@@ -95,6 +100,8 @@
 - Custom **dropdowns** (single, multi, dynamic)
 - Buttons, app bar, search box, placeholders, hero popup, language switcher
 - Responsive **layout helpers** (mobile / tablet / desktop)
+- **PDF annotation** editor (pen, highlighter, text, eraser, undo / redo)
+- Built on **`material_ui`**, Flutter's standalone Material library
 
 </td>
 </tr>
@@ -114,7 +121,7 @@ flowchart TB
         direction TB
         Router["AppRouter<br/><sub>navigation, dialogs</sub>"]
         subgraph Services
-            Api["IApiService<br/><sub>DioApiService / HttpApiService</sub>"]
+            Api["IApiService<br/><sub>DioApiService</sub>"]
             Push["PushNotificationService"]
             Net["InternetConnectionService"]
         end
@@ -151,16 +158,35 @@ flowchart TB
 
 | Requirement | Version |
 | --- | --- |
-| Dart SDK | `^3.8.1` |
-| Flutter | `>= 1.17.0` (a recent stable channel is recommended) |
+| Dart SDK | `^3.13.0` |
+| Flutter | `>= 3.47.0` |
+| Material library | [`material_ui`](https://pub.dev/packages/material_ui) `^1.11.1` and [`cupertino_ui`](https://pub.dev/packages/cupertino_ui), not the deprecated `package:flutter/material.dart` |
+| Android | `minSdk` 24 (Flutter's default) |
+| iOS | 15.0 or later |
 | Platforms | Android, iOS |
 | Firebase | Required only if you use `PushNotificationService` |
+
+> [!NOTE]
+> These minimums come from `material_ui`, `cupertino_ui` and the current Firebase and plugin releases, not from omni_core itself.
 
 ---
 
 ## Installation
 
-Add the package to your `pubspec.yaml`. Pinning to a tag or commit is recommended so upgrades are deliberate:
+Add the package and `material_ui` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  omni_core: ^2.0.0
+  material_ui: ^1.11.1
+```
+
+<details>
+<summary><strong>Installing from Git or a local path instead</strong></summary>
+
+<br/>
+
+Pin a tag or commit so upgrades are deliberate:
 
 ```yaml
 dependencies:
@@ -169,6 +195,16 @@ dependencies:
       url: https://github.com/ahmedabdelrahmanalghwalbi/omni_core.git
       ref: master # or a specific tag / commit
 ```
+
+While developing omni_core alongside an app, point to a local checkout:
+
+```yaml
+dependencies:
+  omni_core:
+    path: ../omni_core
+```
+
+</details>
 
 Then fetch dependencies:
 
@@ -191,7 +227,7 @@ Several features wrap platform plugins that need native configuration in the hos
 
 | Feature | Plugin | Host setup |
 | --- | --- | --- |
-| Push notifications | `firebase_messaging` | Add `google-services.json` / `GoogleService-Info.plist`, enable Push Notifications and Background Modes on iOS |
+| Push notifications | `firebase_messaging` | Add `google-services.json` / `GoogleService-Info.plist`, enable Push Notifications and Background Modes on iOS, upload your APNs key to Firebase |
 | Location | `geolocator`, `geocoding` | Location usage descriptions in `Info.plist`, location permissions in `AndroidManifest.xml` |
 | Camera / photos | `image_picker`, `permission_handler` | `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription` |
 | File uploads | `file_picker` | Follow the plugin's platform notes |
@@ -206,7 +242,7 @@ Several features wrap platform plugins that need native configuration in the hos
 Wire the package's `navigatorKey` into your `MaterialApp`. Toasts, modal sheets, dialogs and navigation all resolve their context through it.
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:omni_core/omni_core.dart';
 
 void main() => runApp(const MyApp());
@@ -219,6 +255,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       navigatorKey: AppRouter.navigatorKey,
       navigatorObservers: [AppRouter.routeObserver],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      supportedLocales: const [Locale('en'), Locale('ar')],
+      // See "Material UI setup" below.
+      // ignore: deprecated_member_use
+      builder: (context, child) => MaterialUiCompatibilityBridge(
+        child: child ?? const SizedBox.shrink(),
+      ),
       home: const HomePage(),
     );
   }
@@ -231,6 +274,51 @@ Anywhere in the app:
 AppRouter.navigateTo(() => const DetailsPage(), animationType: AnimationTypes.slide);
 ToastUtils.showSuccess('Saved successfully');
 ```
+
+### Material UI setup
+
+Since 2.0, omni_core is built on [`material_ui`](https://pub.dev/packages/material_ui), the Material library that Flutter 3.47 moved out of the SDK. The SDK still ships a deprecated copy at `package:flutter/material.dart`, but its `Material`, `Theme`, `ThemeData` and `MaterialLocalizations` are **different classes** from the `material_ui` ones. Widgets from one library can't find the ancestors provided by the other.
+
+Follow these rules in the host app:
+
+1. **Import `package:material_ui/material_ui.dart`**, never `package:flutter/material.dart`. Mixing them in one widget tree is what causes `No Material widget found` and silently lost theming. Flutter's `dart fix --apply --code=migrate_design_widgets` rewrites the imports for you.
+2. **Register `material_ui`'s localizations.** Without them, Material strings (date pickers, Copy / Paste, tooltips) fall back to English. If you use `easy_localization`, combine both lists, because `context.localizationDelegates` only registers the legacy SDK delegates:
+
+   ```dart
+   localizationsDelegates: [
+     ...context.localizationDelegates,
+     ...GlobalMaterialLocalizations.delegates,
+   ],
+   ```
+
+3. **Bridge third-party packages that are still on the legacy library.** Some of omni_core's own dependencies (`toastification`, `board_datetime_picker`, Syncfusion) haven't migrated yet. Wrapping the app in `MaterialUiCompatibilityBridge` through `MaterialApp.builder`, as in the snippet above, passes your theme and localizations to them. The bridge is deprecated on purpose, as a temporary migration aid; remove it once those packages publish `material_ui` releases.
+4. **A legacy widget that needs a `Material` ancestor** (a legacy `TextField`, `InkWell` or `ListTile` from a third-party package) still needs a legacy `Material` around it, because the bridge doesn't provide one:
+
+   ```dart
+   // ignore: deprecated_member_use
+   import 'package:flutter/material.dart' as legacy;
+
+   legacy.Material(
+     type: legacy.MaterialType.transparency,
+     child: SomeLegacyPackageTextField(),
+   );
+   ```
+
+---
+
+## Upgrading to 2.0
+
+2.0 is a breaking release. Work through these steps when upgrading from 1.x:
+
+| Change | What to do |
+| --- | --- |
+| Material types moved to `material_ui` | Switch the app to `material_ui` and complete the [Material UI setup](#material-ui-setup). Values passed into omni_core APIs (for example `ButtonStyle` from `ElevatedButton.styleFrom`) must be `material_ui` types, or they won't compile. |
+| `HttpApiService` removed | Use `DioApiService`. The `http`, `http_parser` and `mime` dependencies are gone too, so add them to your app if you used them directly. |
+| Push notifications use the Firebase Installation ID | `registerDeviceTokenToServerMethod` now receives the FID instead of an FCM registration token. Your backend must send pushes to the FID through FCM direct send. See [Push notifications](#push-notifications). |
+| Higher minimums | Dart `^3.13.0`, Flutter `>= 3.47.0`, Android `minSdk` 24, iOS 15.0. |
+| Dependencies upgraded | `firebase_core` 5, `firebase_messaging` 17, Syncfusion 35, `app_settings` 9, `android_id` 1, `shimmer` 4. Align any of these that your app also depends on directly. |
+
+See the [changelog](CHANGELOG.md) for the full list.
 
 ---
 
@@ -334,7 +422,7 @@ class MyApiServiceHelpers implements IApiServiceHelpers {
 | `handleDIOCancelledRequest` | Request cancelled (e.g. user left the page) |
 | `handleDIOUnknownError` | Parsing, casting, or other unexpected errors |
 | `handleDIOApiCallsErrorsMethod` | Any non-Dio exception during a call |
-| `handleHTTP*` | Equivalents for `HttpApiService` |
+| `handleHTTPApiCallsErrorsMethod` / `handleHTTPConnectionError` | Still required by the interface, but no longer called since `HttpApiService` was removed in 2.0. A minimal implementation is enough. |
 
 </details>
 
@@ -413,18 +501,21 @@ Use `cancelAllRequests()` to abort everything, for example on logout.
 
 ## Push notifications
 
-`PushNotificationService` handles the Firebase Cloud Messaging lifecycle. You supply three callbacks; the service handles the rest.
+`PushNotificationService` handles the Firebase Cloud Messaging lifecycle with the `firebase_messaging` 17 registration APIs (`register`, `onRegistered`, `unregister`). You supply three callbacks; the service handles the rest.
 
 ```mermaid
 flowchart LR
     A["init()"] --> B{"Permission<br/>granted?"}
     B -- No --> X["Log warning<br/>and stop"]
     B -- Yes --> C["Configure foreground<br/>presentation"]
-    C --> D["Get FCM token"]
-    D --> E["registerDeviceTokenToServerMethod"]
-    E --> F["Listen for messages<br/>and token refresh"]
+    C --> D["Listen to onRegistered,<br/>then register()"]
+    D --> E["registerDeviceTokenToServerMethod<br/><sub>with the FID, and again on every FID change</sub>"]
+    D --> F["Listen for messages"]
     F --> G["onReceiveNotification"]
 ```
+
+> [!IMPORTANT]
+> `notificationDeviceToken` is the **Firebase Installation ID (FID)**, not an FCM registration token. Your backend must send to it through FCM direct send. Treat it as the device's current ID: when a new one arrives for the same device, replace the stored value rather than adding a second record.
 
 ```dart
 final pushService = PushNotificationService(
@@ -443,8 +534,8 @@ await pushService.init();
 
 | Method | Description |
 | --- | --- |
-| `init()` | Request permission, configure presentation, register the token, start listeners |
-| `unRegisterNotificaitonDeviceToken()` | Remove the token from your backend and FCM (call on logout) |
+| `init()` | Request permission, configure presentation, register with FCM and keep the backend in sync with the FID, start listeners. Safe to call again after logging in. |
+| `unRegisterNotificaitonDeviceToken()` | Call your backend's unregister callback first; only if it returns `true`, stop syncing FID changes and unregister from FCM. Call on logout. |
 | `getNotificationPermissionStatus()` | Whether notifications are currently authorized |
 
 Badge control is available through `NotificationBadgeUtils`:
@@ -749,6 +840,36 @@ The host controls item lifecycle through these `FormFieldWidget` callbacks:
 
 ---
 
+## PDF annotation
+
+`PdfAnnotationEditorView` is a full-screen editor for drawing, highlighting and writing on a PDF. It never modifies the source file: saving pops the route with an annotated **copy** as a `File`, and leaving without saving pops with `null`.
+
+```dart
+final annotated = await AppRouter.navigateTo(
+  () => PdfAnnotationEditorView(
+    filePath: pdfFile.path,
+    primaryColor: Theme.of(context).colorScheme.primary,
+    outputFileName: 'inspection_signed.pdf', // optional, defaults to the source name
+    texts: const PdfAnnotationTexts(editorTitle: 'Annotate report'),
+  ),
+);
+
+if (annotated is File) {
+  // Upload or preview the annotated copy.
+}
+```
+
+| Capability | Details |
+| --- | --- |
+| Tools | `PdfAnnotationTool.pan`, `pen`, `highlighter`, `text`, `eraser` |
+| Editing | Undo / redo, stroke size, pinch to zoom up to 5x |
+| Output | Original pages kept as they are; strokes written as vector content and text as images, so the result looks the same in any viewer |
+| Localization | Every visible string is a field of `PdfAnnotationTexts`, with English defaults |
+
+The Form Builder's file uploader opens the same editor for PDF attachments. Pass `uploaderFieldPdfAnnotationTexts` to `FormFieldWidget` to localize it.
+
+---
+
 ## Utilities
 
 All utilities are static and require no setup beyond the [quick start](#quick-start).
@@ -828,11 +949,10 @@ CustomElevatedButton(
 | --- | --- |
 | `IApiService` | Abstract contract for HTTP clients |
 | `DioApiService` | Dio implementation with caching, cancellation and upload progress |
-| `HttpApiService` | `package:http` implementation (no caching) |
 | `IApiServiceHelpers` | Host-implemented headers, auth and error mapping |
 | `DioApiCancelTokenManagerService` | Per-page cancel token registry |
 | `ApiLogger` | Request / response / error logging |
-| `PushNotificationService` | FCM lifecycle |
+| `PushNotificationService` | FCM lifecycle and FID registration |
 | `InternetConnectionService` | Connectivity checks |
 | `OperationResult<T>`, `ApiStatus` | Result types |
 | `RequestContentType`, `RequestAcceptanceType`, `RequestCacheTypes` | Request enums |
@@ -861,6 +981,22 @@ CustomElevatedButton(
 </details>
 
 <details>
+<summary><strong>PDF annotation</strong></summary>
+
+<br/>
+
+| Type | Kind |
+| --- | --- |
+| `PdfAnnotationEditorView` | Full-screen editor; pops with the annotated `File` or `null` |
+| `PdfAnnotationTexts` | Every user-facing string, with English defaults |
+| `PdfAnnotationTool` | `pan`, `pen`, `highlighter`, `text`, `eraser` |
+| `PdfAnnotationController` | Annotation state, tool selection and undo / redo history |
+| `PdfAnnotationModel`, `PdfStrokeAnnotationModel`, `PdfTextAnnotationModel` | Annotation models |
+| `PdfAnnotationExportUtils` | Writes annotations into a copy of the PDF |
+
+</details>
+
+<details>
 <summary><strong>Assets</strong></summary>
 
 <br/>
@@ -882,17 +1018,70 @@ lib/
     ├── constants/                   # Package asset paths
     ├── models/                      # AppBaseModel, OperationResult
     ├── services/
-    │   ├── api/                     # IApiService, Dio & http clients, logging
+    │   ├── api/                     # IApiService, Dio client, logging
     │   ├── internet_connection/
     │   └── push_notifications/
     ├── utils/                       # Toast, date, layout, location, camera...
     ├── widgets/                     # Buttons, app bar, dropdowns, popups...
     │   └── custom_dropdown/         # Single, multi and dynamic dropdowns
-    └── form_builder/
-        ├── models/                  # Inputs, statics, structure, enums, rules
-        ├── engine/                  # Scope, visibility, calculation
-        └── views/                   # Per-type field widgets
+    ├── form_builder/
+    │   ├── models/                  # Inputs, statics, structure, enums, rules
+    │   ├── engine/                  # Scope, visibility, calculation
+    │   └── views/                   # Per-type field widgets
+    └── pdf_annotation/
+        ├── models/                  # Annotation models, localized texts
+        ├── utils/                   # Controller, export, text layout
+        └── views/                   # Editor, page, toolbar, text dialog
 ```
+
+---
+
+## Troubleshooting
+
+<details>
+<summary><strong><code>No Material widget found</code> when using an omni_core widget</strong></summary>
+
+<br/>
+
+The app's widget tree and the widget come from different Material libraries. Make sure no file in your app imports `package:flutter/material.dart`, and that you are on omni_core 2.x. See [Material UI setup](#material-ui-setup).
+
+</details>
+
+<details>
+<summary><strong><code>The argument type 'ButtonStyle' can't be assigned to the parameter type 'ButtonStyle?'</code></strong></summary>
+
+<br/>
+
+The two types come from different Material libraries. Build the value with `material_ui`, for example `ElevatedButton.styleFrom` from `package:material_ui/material_ui.dart`.
+
+</details>
+
+<details>
+<summary><strong>Material strings show in English in another locale</strong></summary>
+
+<br/>
+
+Add `GlobalMaterialLocalizations.delegates` from `material_ui` to `MaterialApp.localizationsDelegates`. See step 2 of [Material UI setup](#material-ui-setup).
+
+</details>
+
+<details>
+<summary><strong>Toasts, date pickers or charts ignore the app theme</strong></summary>
+
+<br/>
+
+Those dependencies still use the legacy Material library. Wrap the app in `MaterialUiCompatibilityBridge`, as shown in the [quick start](#quick-start).
+
+</details>
+
+<details>
+<summary><strong>Push notifications stopped arriving after upgrading to 2.0</strong></summary>
+
+<br/>
+
+Your backend is probably still sending to an FCM registration token. Since 2.0, `registerDeviceTokenToServerMethod` delivers the Firebase Installation ID, and the backend must send to it through FCM direct send. See [Push notifications](#push-notifications).
+
+</details>
 
 ---
 

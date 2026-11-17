@@ -130,25 +130,31 @@ class _DropDownFieldState extends State<_DropDownField> {
               widget.suffixIcon ??
               (widget.controller.text != ''
                   ? InkWell(
-                    onTap: () {
-                      setState(() {});
-                      widget.controller.clear();
-                      widget.onRemoveClicked?.call();
-                    },
-                    child: const Icon(Icons.close, color: Colors.red, size: 20),
-                  )
+                      onTap: () {
+                        setState(() {});
+                        widget.controller.clear();
+                        widget.onRemoveClicked?.call();
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                    )
                   : Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color:
-                        widget.isItemsNullOrEmpty ? Colors.grey : Colors.black,
-                    size: 20,
-                  )),
+                      Icons.keyboard_arrow_down_rounded,
+                      color: widget.isItemsNullOrEmpty
+                          ? Colors.grey
+                          : Colors.black,
+                      size: 20,
+                    )),
           hintText: widget.hintText,
           hintStyle: widget.hintStyle,
           fillColor: widget.fillColor,
           filled: true,
-          errorStyle:
-              widget.errorText != null ? widget.errorStyle : _noTextStyle,
+          errorStyle: widget.errorText != null
+              ? widget.errorStyle
+              : _noTextStyle,
           border: border,
           enabledBorder: border,
           focusedBorder: border,

@@ -196,7 +196,9 @@ abstract class FormCalculationUtils {
         }
         return result;
       case CalculationOperator.min:
-        return values.reduce((lowest, value) => value < lowest ? value : lowest);
+        return values.reduce(
+          (lowest, value) => value < lowest ? value : lowest,
+        );
       case CalculationOperator.max:
         return values.reduce(
           (highest, value) => value > highest ? value : highest,
@@ -337,9 +339,7 @@ abstract class FormCalculationUtils {
         reasons.add('"$dependencyKey" is hidden');
         continue;
       }
-      final value = dependency is InputFormFieldModel
-          ? dependency.value
-          : null;
+      final value = dependency is InputFormFieldModel ? dependency.value : null;
       if (value == null) {
         reasons.add('"$dependencyKey" is empty');
         continue;

@@ -82,8 +82,7 @@ class _DynamicMultiSelectFieldWidgetState
   DynamicMultiSelectFormFieldModel get _fieldModel =>
       widget.dynamicMultiSelectFormFieldModel;
 
-  bool get _isEnabled =>
-      !_fieldModel.isDependent || widget.parentValue != null;
+  bool get _isEnabled => !_fieldModel.isDependent || widget.parentValue != null;
 
   bool get _canLoadOptions =>
       widget.optionsFetcher != null &&
@@ -201,8 +200,7 @@ class _DynamicMultiSelectFieldWidgetState
               child: DynamicCustomMultiDropdown(
                 enabled: _isEnabled && _canLoadOptions,
                 itemsLoader: _loadOptions,
-                nameKey:
-                    DynamicMultiSelectFormFieldModel.optionDisplayValueKey,
+                nameKey: DynamicMultiSelectFormFieldModel.optionDisplayValueKey,
                 primaryIdKey: DynamicMultiSelectFormFieldModel.optionIdKey,
                 selectColor: widget.primaryColor,
                 selectedValues: _fieldModel.value,

@@ -99,8 +99,7 @@ class DatePickerFieldWidget extends StatelessWidget {
                             confirmText: confirmText,
                             errorFormatText: invalidDateFormatText,
                             errorInvalidText: outOfRangeDateText,
-                            textDirection:
-                                context.locale.languageCode == 'ar'
+                            textDirection: context.locale.languageCode == 'ar'
                                 ? widgets_import.TextDirection.rtl
                                 : widgets_import.TextDirection.ltr,
                           );

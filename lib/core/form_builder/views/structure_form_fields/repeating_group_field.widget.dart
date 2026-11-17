@@ -5,12 +5,11 @@ part of '../../../../omni_core.dart';
 /// [itemScope] is the scope the field belongs to, so dependent dropdowns,
 /// visibility rules and calculations resolve against the item the field is in
 /// and never against another item or the top-level fields.
-typedef RepeatingGroupItemFieldBuilder =
-    Widget Function(
-      FormFieldModel field,
-      List<FormFieldModel> itemScope,
-      void Function(String fieldKey, dynamic value) onFieldChanged,
-    );
+typedef RepeatingGroupItemFieldBuilder = Widget Function(
+  FormFieldModel field,
+  List<FormFieldModel> itemScope,
+  void Function(String fieldKey, dynamic value) onFieldChanged,
+);
 
 /// Renders a [RepeatingGroupFormFieldModel]: its items, the configured add and
 /// delete actions, and the empty state.
@@ -194,8 +193,7 @@ class RepeatingGroupFieldWidget extends StatelessWidget {
                     : () => onDeleteItem!(index),
                 onExpandedChanged: onItemExpandedChanged == null
                     ? null
-                    : (isExpanded) =>
-                          onItemExpandedChanged!(index, isExpanded),
+                    : (isExpanded) => onItemExpandedChanged!(index, isExpanded),
               ),
           if (!isReadOnly)
             SizedBox(
@@ -302,9 +300,7 @@ class _RepeatingGroupItemCardWidget extends StatelessWidget {
   /// An expanded item can always be collapsed again; reopening a collapsed one
   /// is what the definition may withhold.
   bool get _showsToggleAction =>
-      isCollapsible &&
-      onExpandedChanged != null &&
-      (_isExpanded || canEdit);
+      isCollapsible && onExpandedChanged != null && (_isExpanded || canEdit);
 
   @override
   Widget build(BuildContext context) {

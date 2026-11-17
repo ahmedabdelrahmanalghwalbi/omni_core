@@ -311,55 +311,60 @@ class _DynamicMultiSelectDropdownOverlayState
                       child: ClipRRect(
                         borderRadius:
                             widget.borderRadius ?? BorderRadius.circular(12.0),
-                        child: NotificationListener<
-                          OverscrollIndicatorNotification
-                        >(
-                          onNotification: (notification) {
-                            notification.disallowIndicator();
-                            return true;
-                          },
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              scrollbarTheme: ScrollbarThemeData(
-                                thumbVisibility: WidgetStateProperty.all(true),
-                                thickness: WidgetStateProperty.all(5),
-                                radius: const Radius.circular(4),
-                                thumbColor: WidgetStateProperty.all(
-                                  Colors.grey[300],
+                        child:
+                            NotificationListener<
+                              OverscrollIndicatorNotification
+                            >(
+                              onNotification: (notification) {
+                                notification.disallowIndicator();
+                                return true;
+                              },
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  scrollbarTheme: ScrollbarThemeData(
+                                    thumbVisibility: WidgetStateProperty.all(
+                                      true,
+                                    ),
+                                    thickness: WidgetStateProperty.all(5),
+                                    radius: const Radius.circular(4),
+                                    thumbColor: WidgetStateProperty.all(
+                                      Colors.grey[300],
+                                    ),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: _headerPadding,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              _headerText,
+                                              style: widget.headerStyle,
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          overlayIcon,
+                                        ],
+                                      ),
+                                    ),
+                                    if (widget.enableSearch)
+                                      _DynamicSearchField(
+                                        searchHintText: widget.searchHintText,
+                                        onSearchChanged: _onSearchChanged,
+                                      ),
+                                    expandList
+                                        ? Expanded(child: content)
+                                        : content,
+                                  ],
                                 ),
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: _headerPadding,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          _headerText,
-                                          style: widget.headerStyle,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      overlayIcon,
-                                    ],
-                                  ),
-                                ),
-                                if (widget.enableSearch)
-                                  _DynamicSearchField(
-                                    searchHintText: widget.searchHintText,
-                                    onSearchChanged: _onSearchChanged,
-                                  ),
-                                expandList ? Expanded(child: content) : content,
-                              ],
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                   ),

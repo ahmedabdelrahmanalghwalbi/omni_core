@@ -5,8 +5,8 @@ abstract class IApiService {
   ///
   /// [cacheType] selects the caching strategy for this single request. It is
   /// honored only by [DioApiService] (requires `enableCache: true` and a
-  /// successfully initialized cache store). [HttpApiService] accepts the
-  /// parameter for interface conformance only and does not cache.
+  /// successfully initialized cache store). Other implementations may accept
+  /// the parameter for interface conformance only.
   ///
   /// Setting [cacheType] on one call affects ONLY that call — the global
   /// interceptor default and any other in-flight or future requests are not
@@ -93,7 +93,7 @@ abstract class IApiService {
     RequestAcceptanceType acceptanceType = RequestAcceptanceType.json,
     required String formFieldKeyName,
     List<String>? additionalFields,
-    final bool? usedForSnagsUpload,
+    bool? usedForSnagsUpload,
   });
 
   Future<OperationResult<T>> put<T>(

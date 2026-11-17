@@ -125,9 +125,7 @@ abstract class FormVisibilityUtils {
 
     for (final group in FormFieldScopeUtils.groupsOf(topLevelScope)) {
       for (final item in group.items) {
-        cleared += pruneHiddenValues(
-          FormFieldScopeUtils.flatten(item.fields),
-        );
+        cleared += pruneHiddenValues(FormFieldScopeUtils.flatten(item.fields));
       }
     }
 

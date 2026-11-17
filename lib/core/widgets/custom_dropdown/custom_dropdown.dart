@@ -4,7 +4,8 @@ export 'custom_dropdown.dart';
 // Imports
 import 'dart:async';
 import 'dart:developer';
-import 'package:flutter/material.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 // Parts
 part 'animated_section.dart';
@@ -144,16 +145,15 @@ class CustomDropdownState extends State<CustomDropdown> {
 
   String? get widgetSelectedValue =>
       (widget.selectedValue?[widget.nameKey] is Map)
-          ? (widget.selectedValue?[widget.nameKey][widget.nameMapKey])
-          : widget.selectedValue?[widget.nameKey];
+      ? (widget.selectedValue?[widget.nameKey][widget.nameMapKey])
+      : widget.selectedValue?[widget.nameKey];
 
   List<String> get dataItems =>
       widget.items
           ?.map(
-            (element) =>
-                (element[widget.nameKey] is Map)
-                    ? (element[widget.nameKey][widget.nameMapKey]).toString()
-                    : element[widget.nameKey].toString(),
+            (element) => (element[widget.nameKey] is Map)
+                ? (element[widget.nameKey][widget.nameMapKey]).toString()
+                : element[widget.nameKey].toString(),
           )
           .toList() ??
       [];
@@ -207,10 +207,9 @@ class CustomDropdownState extends State<CustomDropdown> {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: AbsorbPointer(
-        absorbing:
-            ((widget.items == null) || (widget.items?.isEmpty ?? false))
-                ? true
-                : false,
+        absorbing: ((widget.items == null) || (widget.items?.isEmpty ?? false))
+            ? true
+            : false,
         child: _OverlayBuilder(
           overlay: (size, hideCallback) {
             return _DropdownOverlay(
@@ -221,10 +220,9 @@ class CustomDropdownState extends State<CustomDropdown> {
               size: size,
               layerLink: layerLink,
               hideOverlay: hideCallback,
-              headerStyle:
-                  (textEditingController.text.isNotEmpty)
-                      ? selectedStyle
-                      : hintStyle,
+              headerStyle: (textEditingController.text.isNotEmpty)
+                  ? selectedStyle
+                  : hintStyle,
               hintText: hintText,
               listItemStyle: widget.listItemStyle,
               excludeSelected: widget.excludeSelected,
@@ -240,42 +238,41 @@ class CustomDropdownState extends State<CustomDropdown> {
           child: (showCallback) {
             return CompositedTransformTarget(
               link: layerLink,
-              child:
-                  widget.basicWidget != null
-                      ? InkWell(
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          showCallback();
-                        },
-                        child: widget.basicWidget,
-                      )
-                      : _DropDownField(
-                        label: widget.label,
-                        labelStyle: widget.labelStyle,
-                        labelText: widget.labelText,
-                        onRemoveClicked: widget.onRemoveClicked,
-                        isItemsNullOrEmpty: dataItems.isEmpty,
-                        controller: textEditingController,
-                        validator: widget.validator,
-                        autovalidateMode: widget.autovalidateMode,
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          showCallback();
-                        },
-                        style: selectedStyle,
-                        borderRadius: widget.borderRadius,
-                        borderSide: widget.borderSide,
-                        errorBorderSide: widget.errorBorderSide,
-                        errorStyle: widget.errorStyle,
-                        errorText: widget.errorText,
-                        hintStyle: hintStyle,
-                        hintText: hintText,
-                        prefixIcon: widget.fieldPrefixIcon,
-                        suffixIcon: widget.fieldSuffixIcon,
-                        // onChanged: widget.onChanged,
-                        fillColor: widget.fillColor,
-                        contentPadding: widget.contentPadding,
-                      ),
+              child: widget.basicWidget != null
+                  ? InkWell(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        showCallback();
+                      },
+                      child: widget.basicWidget,
+                    )
+                  : _DropDownField(
+                      label: widget.label,
+                      labelStyle: widget.labelStyle,
+                      labelText: widget.labelText,
+                      onRemoveClicked: widget.onRemoveClicked,
+                      isItemsNullOrEmpty: dataItems.isEmpty,
+                      controller: textEditingController,
+                      validator: widget.validator,
+                      autovalidateMode: widget.autovalidateMode,
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        showCallback();
+                      },
+                      style: selectedStyle,
+                      borderRadius: widget.borderRadius,
+                      borderSide: widget.borderSide,
+                      errorBorderSide: widget.errorBorderSide,
+                      errorStyle: widget.errorStyle,
+                      errorText: widget.errorText,
+                      hintStyle: hintStyle,
+                      hintText: hintText,
+                      prefixIcon: widget.fieldPrefixIcon,
+                      suffixIcon: widget.fieldSuffixIcon,
+                      // onChanged: widget.onChanged,
+                      fillColor: widget.fillColor,
+                      contentPadding: widget.contentPadding,
+                    ),
             );
           },
         ),

@@ -79,20 +79,19 @@ class _MultiSelectDropDownFieldState extends State<_MultiSelectDropDownField> {
           const BorderSide(color: Colors.redAccent, width: 2),
     );
 
-    final Widget? defaultSuffixIcon =
-        widget.selectedItems.isNotEmpty
-            ? InkWell(
-              onTap: () {
-                widget.onRemoveClicked?.call();
-                setState(() {});
-              },
-              child: const Icon(Icons.close, color: Colors.red, size: 20),
-            )
-            : Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: widget.isItemsNullOrEmpty ? Colors.grey : Colors.black,
-              size: 20,
-            );
+    final Widget? defaultSuffixIcon = widget.selectedItems.isNotEmpty
+        ? InkWell(
+            onTap: () {
+              widget.onRemoveClicked?.call();
+              setState(() {});
+            },
+            child: const Icon(Icons.close, color: Colors.red, size: 20),
+          )
+        : Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: widget.isItemsNullOrEmpty ? Colors.grey : Colors.black,
+            size: 20,
+          );
 
     return InkWell(
       onTap: widget.isReadOnly ? null : widget.onTap,
@@ -106,61 +105,53 @@ class _MultiSelectDropDownFieldState extends State<_MultiSelectDropDownField> {
               widget.contentPadding ?? const EdgeInsets.only(left: 16),
           prefixIcon: widget.prefixIcon,
           // A read-only field has nothing to open and nothing to clear.
-          suffixIcon:
-              widget.isReadOnly ? null : widget.suffixIcon ?? defaultSuffixIcon,
+          suffixIcon: widget.isReadOnly
+              ? null
+              : widget.suffixIcon ?? defaultSuffixIcon,
           hintText: widget.hintText,
           hintStyle: widget.hintStyle,
           fillColor: widget.fillColor,
           filled: true,
-          errorStyle:
-              widget.errorText != null
-                  ? widget.errorStyle
-                  : const TextStyle(height: 0),
+          errorStyle: widget.errorText != null
+              ? widget.errorStyle
+              : const TextStyle(height: 0),
           border: border,
           enabledBorder: border,
           focusedBorder: border,
           errorBorder: errorBorder,
           focusedErrorBorder: errorBorder,
         ),
-        child:
-            widget.selectedItems.isEmpty
-                ? Text(
-                  widget.hintText ?? 'Select items',
-                  style: widget.hintStyle,
-                )
-                : Wrap(
-                  spacing: 8.0,
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  runAlignment: WrapAlignment.start,
-                  children:
-                      widget.selectedItems.map((item) {
-                        final displayText =
-                            item[widget.nameKey] is Map
-                                ? item[widget.nameKey][widget.nameMapKey]
-                                    .toString()
-                                : item[widget.nameKey].toString();
+        child: widget.selectedItems.isEmpty
+            ? Text(widget.hintText ?? 'Select items', style: widget.hintStyle)
+            : Wrap(
+                spacing: 8.0,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                runAlignment: WrapAlignment.start,
+                children: widget.selectedItems.map((item) {
+                  final displayText = item[widget.nameKey] is Map
+                      ? item[widget.nameKey][widget.nameMapKey].toString()
+                      : item[widget.nameKey].toString();
 
-                        return widget.chipBuilder != null
-                            ? widget.chipBuilder!(item)
-                            : Chip(
-                              backgroundColor:
-                                  widget.selectedItemChipBackgroundColor,
-                              label: Text(displayText),
-                              deleteIcon: const Icon(
-                                Icons.close,
-                                size: 16,
-                                color: Colors.red,
-                              ),
-                              onDeleted:
-                                  widget.isReadOnly
-                                      ? null
-                                      : () {
-                                        widget.onItemRemoved?.call(item);
-                                        setState(() {});
-                                      },
-                            );
-                      }).toList(),
-                ),
+                  return widget.chipBuilder != null
+                      ? widget.chipBuilder!(item)
+                      : Chip(
+                          backgroundColor:
+                              widget.selectedItemChipBackgroundColor,
+                          label: Text(displayText),
+                          deleteIcon: const Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.red,
+                          ),
+                          onDeleted: widget.isReadOnly
+                              ? null
+                              : () {
+                                  widget.onItemRemoved?.call(item);
+                                  setState(() {});
+                                },
+                        );
+                }).toList(),
+              ),
       ),
     );
   }

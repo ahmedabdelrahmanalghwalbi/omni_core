@@ -68,14 +68,12 @@ class _MultiSelectDropdownOverlayState
         setState(() => items = widget.items);
         return;
       }
-      final result =
-          widget.items.where((item) {
-            final displayText =
-                item[widget.nameKey] is Map
-                    ? (item[widget.nameKey][widget.nameMapKey] ?? '').toString()
-                    : (item[widget.nameKey] ?? '').toString();
-            return displayText.toLowerCase().contains(str.toLowerCase());
-          }).toList();
+      final result = widget.items.where((item) {
+        final displayText = item[widget.nameKey] is Map
+            ? (item[widget.nameKey][widget.nameMapKey] ?? '').toString()
+            : (item[widget.nameKey] ?? '').toString();
+        return displayText.toLowerCase().contains(str.toLowerCase());
+      }).toList();
 
       setState(() => items = result);
     } catch (ex, t) {
@@ -119,8 +117,9 @@ class _MultiSelectDropdownOverlayState
       size: 20,
     );
     final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
-    final listPadding =
-        onListDataSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
+    final listPadding = onListDataSearch
+        ? const EdgeInsets.only(top: 8)
+        : EdgeInsets.zero;
 
     final child = Stack(
       children: [
@@ -128,8 +127,9 @@ class _MultiSelectDropdownOverlayState
           width: widget.customOverRelayWidth ?? widget.size.width + 23,
           child: CompositedTransformFollower(
             link: widget.layerLink,
-            followerAnchor:
-                displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
+            followerAnchor: displayOverlayBottom
+                ? Alignment.topLeft
+                : Alignment.bottomLeft,
             showWhenUnlinked: false,
             offset: overlayOffset,
             child: Container(
@@ -154,186 +154,198 @@ class _MultiSelectDropdownOverlayState
                     expand: displayOverly,
                     axisAlignment: displayOverlayBottom ? 1.0 : -1.0,
                     child: SizedBox(
-                      height:
-                          items.length > 4
-                              ? MediaQuery.of(context).size.height / 2
-                              : null,
+                      height: items.length > 4
+                          ? MediaQuery.of(context).size.height / 2
+                          : null,
                       child: ClipRRect(
                         borderRadius:
                             widget.borderRadius ?? BorderRadius.circular(12.0),
-                        child: NotificationListener<
-                          OverscrollIndicatorNotification
-                        >(
-                          onNotification: (notification) {
-                            notification.disallowIndicator();
-                            return true;
-                          },
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              scrollbarTheme: ScrollbarThemeData(
-                                thumbVisibility: WidgetStateProperty.all(true),
-                                thickness: WidgetStateProperty.all(5),
-                                radius: const Radius.circular(4),
-                                thumbColor: WidgetStateProperty.all(
-                                  Colors.grey[300],
+                        child:
+                            NotificationListener<
+                              OverscrollIndicatorNotification
+                            >(
+                              onNotification: (notification) {
+                                notification.disallowIndicator();
+                                return true;
+                              },
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  scrollbarTheme: ScrollbarThemeData(
+                                    thumbVisibility: WidgetStateProperty.all(
+                                      true,
+                                    ),
+                                    thickness: WidgetStateProperty.all(5),
+                                    radius: const Radius.circular(4),
+                                    thumbColor: WidgetStateProperty.all(
+                                      Colors.grey[300],
+                                    ),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 16.0,
+                                        top: 16,
+                                        bottom: 16,
+                                        right: 14,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              getSelectedText(),
+                                              style: widget.headerStyle,
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          overlayIcon,
+                                        ],
+                                      ),
+                                    ),
+                                    if (onListDataSearch)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                        ),
+                                        child: TextField(
+                                          controller: searchCtrl,
+                                          onChanged: onSearch,
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: Colors.grey[50],
+                                            constraints:
+                                                const BoxConstraints.tightFor(
+                                                  height: 40,
+                                                ),
+                                            contentPadding:
+                                                const EdgeInsets.all(8),
+                                            hintText: widget.searchHintText,
+                                            hintStyle: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                            prefixIcon: const Icon(
+                                              Icons.search,
+                                              color: Colors.grey,
+                                              size: 22,
+                                            ),
+                                            suffixIcon: GestureDetector(
+                                              onTap: () {
+                                                searchCtrl.clear();
+                                                onSearch('');
+                                              },
+                                              child: const Icon(
+                                                Icons.close,
+                                                color: Colors.grey,
+                                                size: 20,
+                                              ),
+                                            ),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.withOpacity(
+                                                  .25,
+                                                ),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.withOpacity(
+                                                  .25,
+                                                ),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.withOpacity(
+                                                  .25,
+                                                ),
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                    (items.isEmpty)
+                                        ? const Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 12.0,
+                                              ),
+                                              child: Text(
+                                                'No result found.',
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          )
+                                        : items.length > 4
+                                        ? Expanded(
+                                            child: _MultiSelectItemsList(
+                                              selectColor: widget.selectColor,
+                                              primaryIdKey: widget.primaryIdKey,
+                                              scrollController:
+                                                  scrollController,
+                                              items: items,
+                                              selectedItems:
+                                                  widget.selectedItems,
+                                              nameKey: widget.nameKey,
+                                              nameMapKey: widget.nameMapKey,
+                                              padding: listPadding,
+                                              itemTextStyle:
+                                                  widget.listItemStyle,
+                                              subNameKey: widget.subNameKey,
+                                              onItemSelect: (item) {
+                                                widget.onItemSelected(item);
+                                                if (searchCtrl
+                                                    .text
+                                                    .isNotEmpty) {
+                                                  searchCtrl.clear();
+                                                  onSearch('');
+                                                }
+                                                setState(() {});
+                                              },
+                                              maxSelectedItems:
+                                                  widget.maxSelectedItems,
+                                            ),
+                                          )
+                                        : _MultiSelectItemsList(
+                                            selectColor: widget.selectColor,
+                                            primaryIdKey: widget.primaryIdKey,
+                                            scrollController: scrollController,
+                                            items: items,
+                                            selectedItems: widget.selectedItems,
+                                            nameKey: widget.nameKey,
+                                            nameMapKey: widget.nameMapKey,
+                                            padding: listPadding,
+                                            itemTextStyle: widget.listItemStyle,
+                                            subNameKey: widget.subNameKey,
+                                            onItemSelect: (item) {
+                                              widget.onItemSelected(item);
+                                              if (searchCtrl.text.isNotEmpty) {
+                                                searchCtrl.clear();
+                                                onSearch('');
+                                              }
+                                              setState(() {});
+                                            },
+                                            maxSelectedItems:
+                                                widget.maxSelectedItems,
+                                          ),
+                                  ],
                                 ),
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 16.0,
-                                    top: 16,
-                                    bottom: 16,
-                                    right: 14,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          getSelectedText(),
-                                          style: widget.headerStyle,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      overlayIcon,
-                                    ],
-                                  ),
-                                ),
-                                if (onListDataSearch)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: TextField(
-                                      controller: searchCtrl,
-                                      onChanged: onSearch,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Colors.grey[50],
-                                        constraints:
-                                            const BoxConstraints.tightFor(
-                                              height: 40,
-                                            ),
-                                        contentPadding: const EdgeInsets.all(8),
-                                        hintText: widget.searchHintText,
-                                        hintStyle: const TextStyle(
-                                          color: Colors.grey,
-                                        ),
-                                        prefixIcon: const Icon(
-                                          Icons.search,
-                                          color: Colors.grey,
-                                          size: 22,
-                                        ),
-                                        suffixIcon: GestureDetector(
-                                          onTap: () {
-                                            searchCtrl.clear();
-                                            onSearch('');
-                                          },
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.grey,
-                                            size: 20,
-                                          ),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.withOpacity(.25),
-                                            width: 1,
-                                          ),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.withOpacity(.25),
-                                            width: 1,
-                                          ),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.grey.withOpacity(.25),
-                                            width: 1,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                (items.isEmpty)
-                                    ? const Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 12.0,
-                                        ),
-                                        child: Text(
-                                          'No result found.',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ),
-                                    )
-                                    : items.length > 4
-                                    ? Expanded(
-                                      child: _MultiSelectItemsList(
-                                        selectColor: widget.selectColor,
-                                        primaryIdKey: widget.primaryIdKey,
-                                        scrollController: scrollController,
-                                        items: items,
-                                        selectedItems: widget.selectedItems,
-                                        nameKey: widget.nameKey,
-                                        nameMapKey: widget.nameMapKey,
-                                        padding: listPadding,
-                                        itemTextStyle: widget.listItemStyle,
-                                        subNameKey: widget.subNameKey,
-                                        onItemSelect: (item) {
-                                          widget.onItemSelected(item);
-                                          if (searchCtrl.text.isNotEmpty) {
-                                            searchCtrl.clear();
-                                            onSearch('');
-                                          }
-                                          setState(() {});
-                                        },
-                                        maxSelectedItems:
-                                            widget.maxSelectedItems,
-                                      ),
-                                    )
-                                    : _MultiSelectItemsList(
-                                      selectColor: widget.selectColor,
-                                      primaryIdKey: widget.primaryIdKey,
-                                      scrollController: scrollController,
-                                      items: items,
-                                      selectedItems: widget.selectedItems,
-                                      nameKey: widget.nameKey,
-                                      nameMapKey: widget.nameMapKey,
-                                      padding: listPadding,
-                                      itemTextStyle: widget.listItemStyle,
-                                      subNameKey: widget.subNameKey,
-                                      onItemSelect: (item) {
-                                        widget.onItemSelected(item);
-                                        if (searchCtrl.text.isNotEmpty) {
-                                          searchCtrl.clear();
-                                          onSearch('');
-                                        }
-                                        setState(() {});
-                                      },
-                                      maxSelectedItems: widget.maxSelectedItems,
-                                    ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -352,38 +364,37 @@ class _MultiSelectDropdownOverlayState
           widget.hideOverlay();
         }
       },
-      child:
-          widget.canCloseOutsideBounds!
-              ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: Colors.transparent,
-                child: child,
-                // child: Column(
-                //   mainAxisSize: MainAxisSize.min,
-                //   children: [
-                //     Expanded(child: child),
-                //     if (widget.onComplete != null)
-                //       Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Row(
-                //           mainAxisAlignment: MainAxisAlignment.end,
-                //           children: [
-                //             if (widget.onComplete != null)
-                //               ElevatedButton(
-                //                 onPressed: () {
-                //                   widget.hideOverlay();
-                //                   widget.onComplete?.call();
-                //                 },
-                //                 child: const Text('Confirm'),
-                //               ),
-                //           ],
-                //         ),
-                //       ),
-                //   ],
-                // ),
-              )
-              : child,
+      child: widget.canCloseOutsideBounds!
+          ? Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.transparent,
+              child: child,
+              // child: Column(
+              //   mainAxisSize: MainAxisSize.min,
+              //   children: [
+              //     Expanded(child: child),
+              //     if (widget.onComplete != null)
+              //       Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.end,
+              //           children: [
+              //             if (widget.onComplete != null)
+              //               ElevatedButton(
+              //                 onPressed: () {
+              //                   widget.hideOverlay();
+              //                   widget.onComplete?.call();
+              //                 },
+              //                 child: const Text('Confirm'),
+              //               ),
+              //           ],
+              //         ),
+              //       ),
+              //   ],
+              // ),
+            )
+          : child,
     );
   }
 }
@@ -422,10 +433,9 @@ class _MultiSelectItemsList extends StatefulWidget {
 }
 
 class _MultiSelectItemsListState extends State<_MultiSelectItemsList> {
-  Set<String> get selectedItemIds =>
-      widget.selectedItems
-          .map((item) => item[widget.primaryIdKey].toString())
-          .toSet();
+  Set<String> get selectedItemIds => widget.selectedItems
+      .map((item) => item[widget.primaryIdKey].toString())
+      .toSet();
 
   @override
   Widget build(BuildContext context) {
@@ -441,12 +451,12 @@ class _MultiSelectItemsListState extends State<_MultiSelectItemsList> {
       itemBuilder: (_, index) {
         final item = widget.items[index];
         final itemId = item[widget.primaryIdKey].toString();
-        final displayText =
-            item[widget.nameKey] is Map
-                ? item[widget.nameKey][widget.nameMapKey].toString()
-                : item[widget.nameKey].toString();
-        final subDisplayText =
-            widget.subNameKey != null ? item[widget.subNameKey] : null;
+        final displayText = item[widget.nameKey] is Map
+            ? item[widget.nameKey][widget.nameMapKey].toString()
+            : item[widget.nameKey].toString();
+        final subDisplayText = widget.subNameKey != null
+            ? item[widget.subNameKey]
+            : null;
         final isSelected = selectedItemIds.contains(itemId);
         final isDisabled =
             widget.maxSelectedItems != null &&
@@ -456,12 +466,11 @@ class _MultiSelectItemsListState extends State<_MultiSelectItemsList> {
         return InkWell(
           splashColor: Colors.transparent,
           highlightColor: Colors.grey[200],
-          onTap:
-              isDisabled
-                  ? null
-                  : () {
-                    widget.onItemSelect(item);
-                  },
+          onTap: isDisabled
+              ? null
+              : () {
+                  widget.onItemSelect(item);
+                },
           child: Container(
             color: Colors.transparent,
             padding: const EdgeInsets.symmetric(
@@ -474,16 +483,17 @@ class _MultiSelectItemsListState extends State<_MultiSelectItemsList> {
               children: [
                 isSelected
                     ? Icon(
-                      Icons.check_box_rounded,
-                      size: 16.0,
-                      color: widget.selectColor,
-                    )
+                        Icons.check_box_rounded,
+                        size: 16.0,
+                        color: widget.selectColor,
+                      )
                     : Icon(
-                      Icons.check_box_outline_blank,
-                      color:
-                          isDisabled ? Colors.grey[400] : listItemStyle.color,
-                      size: 16.0,
-                    ),
+                        Icons.check_box_outline_blank,
+                        color: isDisabled
+                            ? Colors.grey[400]
+                            : listItemStyle.color,
+                        size: 16.0,
+                      ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,10 +502,9 @@ class _MultiSelectItemsListState extends State<_MultiSelectItemsList> {
                       Text(
                         displayText,
                         style: listItemStyle.copyWith(
-                          color:
-                              isDisabled
-                                  ? Colors.grey[400]
-                                  : listItemStyle.color,
+                          color: isDisabled
+                              ? Colors.grey[400]
+                              : listItemStyle.color,
                         ),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,

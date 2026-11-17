@@ -6,10 +6,7 @@ class ComputedValueConfigModel {
   final List<String> operands;
   final CalculationOperator? operator;
 
-  const ComputedValueConfigModel({
-    this.operands = const [],
-    this.operator,
-  });
+  const ComputedValueConfigModel({this.operands = const [], this.operator});
 
   factory ComputedValueConfigModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return const ComputedValueConfigModel();

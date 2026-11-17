@@ -10,10 +10,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class PushNotificationService {
-  /// Callback invoked when a new or refreshed FCM device token is obtained.
-  /// Use this to send the token to your backend so it can target this device for push notifications.
+  /// Callback invoked when this app instance is registered with Firebase Cloud
+  /// Messaging, and again whenever its registration ID changes.
+  /// Use this to send the ID to your backend so it can target this device.
   final Future<void> Function({
-    /// The unique FCM device token that identifies this installation.
+    /// The Firebase Installation ID (FID) that identifies this app instance
+    /// as an FCM direct-send target.
     required String notificationDeviceToken,
   })
   registerDeviceTokenToServerMethod;
@@ -35,6 +37,8 @@ class PushNotificationService {
   });
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  StreamSubscription<String>? _registrationSubscription;
+  String? _lastRegisteredId;
 
   /// Initialize Firebase Messaging
   Future<void> init() async {
@@ -51,9 +55,9 @@ class PushNotificationService {
       }
       // 2️⃣ Configure how foreground notifications appear
       await _setupForegroundNotification();
-      // 3️⃣ Register the initial device token
-      await _onRegisterDeviceToken();
-      // 4️⃣ Start listeners for messages and token refresh
+      // 3️⃣ Register with FCM and keep the backend in sync with the FID
+      await _registerDevice();
+      // 4️⃣ Start listeners for messages
       _setupListeners();
     } catch (err, trace) {
       PackageLogger.error(
@@ -142,18 +146,23 @@ class PushNotificationService {
     );
   }
 
-  /// Obtain and send the current FCM token to your server
-  Future<void> _onRegisterDeviceToken() async {
+  /// Register this app instance with FCM. The FID arrives on [FirebaseMessaging.onRegistered],
+  /// which also fires when the FID changes, so the backend stays in sync.
+  Future<void> _registerDevice() async {
     try {
-      final userToken = await _firebaseMessaging.getToken();
-      if (userToken?.isEmpty ?? true) {
-        PackageLogger.warning(
-          '❌ Firebase Token is null, registration skipped',
+      // onRegistered is a broadcast stream without replay, so listen before
+      // calling register() or the first FID can be missed.
+      await _registrationSubscription?.cancel();
+      _registrationSubscription = _firebaseMessaging.onRegistered.listen(
+        _onDeviceRegistered,
+        onError: (Object err, StackTrace trace) => PackageLogger.error(
+          '🔥 FCM registration stream error',
+          error: err,
+          stackTrace: trace,
           tag: 'Push Notifications Service',
-        );
-        return;
-      }
-      await _sendNotificationTokenToServer(notificationDeviceToken: userToken!);
+        ),
+      );
+      await _firebaseMessaging.register();
     } catch (err, trace) {
       PackageLogger.error(
         '🔥 Device token registration failed',
@@ -162,6 +171,14 @@ class PushNotificationService {
         tag: 'Push Notifications Service',
       );
     }
+  }
+
+  Future<void> _onDeviceRegistered(String installationId) async {
+    if (installationId.isEmpty || installationId == _lastRegisteredId) return;
+    _lastRegisteredId = installationId;
+    await _sendNotificationTokenToServer(
+      notificationDeviceToken: installationId,
+    );
   }
 
   /// Register Notification Token
@@ -188,8 +205,11 @@ class PushNotificationService {
       /// 1: call unRegisterDeviceToken method
       final result = await unregisterDeviceTokenToServerMethod();
       if (result) {
-        /// 2: delete token
-        await _firebaseMessaging.deleteToken();
+        /// 2: stop syncing FID changes, then unregister from FCM
+        await _registrationSubscription?.cancel();
+        _registrationSubscription = null;
+        _lastRegisteredId = null;
+        await _firebaseMessaging.unregister();
         return true;
       }
       return false;
@@ -204,7 +224,7 @@ class PushNotificationService {
     }
   }
 
-  /// Setup message and token listeners
+  /// Setup message listeners
   void _setupListeners() {
     // Foreground messages
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
@@ -213,22 +233,6 @@ class PushNotificationService {
 
     /// Background messages [top-level function]
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    // 🔄 Listen for token refresh and re-register with server
-    // unawaited(
-    //   Future.delayed(const Duration(seconds: 1), () {
-    //     _firebaseMessaging.onTokenRefresh.listen((newToken) async {
-    //       PackageLogger.info(
-    //         '🔄 FCM token refreshed: $newToken',
-    //         tag: 'Push Notifications Service',
-    //       );
-    //       await _firebaseMessaging.deleteToken();
-    //       await _sendNotificationTokenToServer(
-    //         notificationDeviceToken: newToken,
-    //       );
-    //     });
-    //   }),
-    // );
   }
 
   /// Handle foreground messages

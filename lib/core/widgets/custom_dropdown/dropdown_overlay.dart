@@ -134,35 +134,36 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
     final overlayOffset = Offset(-12, displayOverlayBottom ? 0 : 60);
 
     // list padding
-    final listPadding =
-        onListDataSearch ? const EdgeInsets.only(top: 8) : EdgeInsets.zero;
+    final listPadding = onListDataSearch
+        ? const EdgeInsets.only(top: 8)
+        : EdgeInsets.zero;
 
     // items list
-    final list =
-        items.isNotEmpty
-            ? _ItemsList(
-              scrollController: scrollController,
-              excludeSelected:
-                  widget.items.length > 1 ? widget.excludeSelected! : false,
-              items: items,
-              padding: listPadding,
-              headerText: headerText,
-              itemTextStyle: widget.listItemStyle,
-              onItemSelect: (value) async {
-                setState(() => displayOverly = false);
-                await Future.delayed(const Duration(milliseconds: 300));
-                if (headerText != value) {
-                  widget.controller.text = value;
-                  widget.onChanged?.call(widget.controller.text);
-                }
-              },
-            )
-            : const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 12.0),
-                child: Text('No result found.', style: TextStyle(fontSize: 16)),
-              ),
-            );
+    final list = items.isNotEmpty
+        ? _ItemsList(
+            scrollController: scrollController,
+            excludeSelected: widget.items.length > 1
+                ? widget.excludeSelected!
+                : false,
+            items: items,
+            padding: listPadding,
+            headerText: headerText,
+            itemTextStyle: widget.listItemStyle,
+            onItemSelect: (value) async {
+              setState(() => displayOverly = false);
+              await Future.delayed(const Duration(milliseconds: 300));
+              if (headerText != value) {
+                widget.controller.text = value;
+                widget.onChanged?.call(widget.controller.text);
+              }
+            },
+          )
+        : const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              child: Text('No result found.', style: TextStyle(fontSize: 16)),
+            ),
+          );
 
     final child = Stack(
       children: [
@@ -170,8 +171,9 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
           width: widget.customOverRelayWidth ?? widget.size.width + 23,
           child: CompositedTransformFollower(
             link: widget.layerLink,
-            followerAnchor:
-                displayOverlayBottom ? Alignment.topLeft : Alignment.bottomLeft,
+            followerAnchor: displayOverlayBottom
+                ? Alignment.topLeft
+                : Alignment.bottomLeft,
             showWhenUnlinked: false,
             offset: overlayOffset,
             child: Container(
@@ -203,67 +205,71 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
                       //         ? 270
                       //         : 225
                       //     : null,
-                      height:
-                          items.length > 4
-                              ? MediaQuery.of(context).size.height / 2
-                              : null,
+                      height: items.length > 4
+                          ? MediaQuery.of(context).size.height / 2
+                          : null,
                       child: ClipRRect(
                         borderRadius:
                             widget.borderRadius ?? BorderRadius.circular(12.0),
-                        child: NotificationListener<
-                          OverscrollIndicatorNotification
-                        >(
-                          onNotification: (notification) {
-                            notification.disallowIndicator();
-                            return true;
-                          },
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              scrollbarTheme: ScrollbarThemeData(
-                                thumbVisibility: WidgetStateProperty.all(true),
-                                thickness: WidgetStateProperty.all(5),
-                                radius: const Radius.circular(4),
-                                thumbColor: WidgetStateProperty.all(
-                                  Colors.grey[300],
+                        child:
+                            NotificationListener<
+                              OverscrollIndicatorNotification
+                            >(
+                              onNotification: (notification) {
+                                notification.disallowIndicator();
+                                return true;
+                              },
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  scrollbarTheme: ScrollbarThemeData(
+                                    thumbVisibility: WidgetStateProperty.all(
+                                      true,
+                                    ),
+                                    thickness: WidgetStateProperty.all(5),
+                                    radius: const Radius.circular(4),
+                                    thumbColor: WidgetStateProperty.all(
+                                      Colors.grey[300],
+                                    ),
+                                  ),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: _headerPadding,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              headerText.isNotEmpty
+                                                  ? headerText
+                                                  : widget.hintText,
+                                              style: widget.headerStyle,
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          overlayIcon,
+                                        ],
+                                      ),
+                                    ),
+                                    if (onListDataSearch)
+                                      _SearchField(
+                                        items: filteredItems,
+                                        searchHintText: widget.searchHintText,
+                                        onSearchedItems: (val) {
+                                          setState(() => items = val);
+                                        },
+                                      ),
+                                    items.length > 4
+                                        ? Expanded(child: list)
+                                        : list,
+                                  ],
                                 ),
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: _headerPadding,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          headerText.isNotEmpty
-                                              ? headerText
-                                              : widget.hintText,
-                                          style: widget.headerStyle,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      overlayIcon,
-                                    ],
-                                  ),
-                                ),
-                                if (onListDataSearch)
-                                  _SearchField(
-                                    items: filteredItems,
-                                    searchHintText: widget.searchHintText,
-                                    onSearchedItems: (val) {
-                                      setState(() => items = val);
-                                    },
-                                  ),
-                                items.length > 4 ? Expanded(child: list) : list,
-                              ],
-                            ),
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -277,15 +283,14 @@ class _DropdownOverlayState extends State<_DropdownOverlay> {
 
     return GestureDetector(
       onTap: () => setState(() => displayOverly = false),
-      child:
-          widget.canCloseOutsideBounds!
-              ? Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: Colors.transparent,
-                child: child,
-              )
-              : child,
+      child: widget.canCloseOutsideBounds!
+          ? Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Colors.transparent,
+              child: child,
+            )
+          : child,
     );
   }
 }
@@ -378,10 +383,9 @@ class _SearchFieldState extends State<_SearchField> {
   }
 
   void onSearch(String str) {
-    final result =
-        widget.items
-            .where((item) => item.toLowerCase().contains(str.toLowerCase()))
-            .toList();
+    final result = widget.items
+        .where((item) => item.toLowerCase().contains(str.toLowerCase()))
+        .toList();
     widget.onSearchedItems(result);
   }
 

@@ -87,8 +87,7 @@ class _DynamicDropdownFieldWidgetState
   DynamicDropdownFormFieldModel get _fieldModel =>
       widget.dynamicDropdownFormFieldModel;
 
-  bool get _isEnabled =>
-      !_fieldModel.isDependent || widget.parentValue != null;
+  bool get _isEnabled => !_fieldModel.isDependent || widget.parentValue != null;
 
   bool get _canLoadOptions =>
       widget.optionsFetcher != null &&
@@ -97,7 +96,8 @@ class _DynamicDropdownFieldWidgetState
   @override
   void didUpdateWidget(covariant DynamicDropdownFieldWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_fieldModel.isDependent && widget.parentValue != oldWidget.parentValue) {
+    if (_fieldModel.isDependent &&
+        widget.parentValue != oldWidget.parentValue) {
       _clearSelection();
     }
   }

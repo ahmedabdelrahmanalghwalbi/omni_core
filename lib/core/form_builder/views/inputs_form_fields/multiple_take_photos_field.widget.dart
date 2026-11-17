@@ -252,9 +252,8 @@ class _MultipleTakeImagesFieldWidgetState
       final String tempPath =
           '${(await getTemporaryDirectory()).path}/edited_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      final File editedFile = await File(
-        tempPath,
-      ).writeAsBytes(parsedEditBytes);
+      final File editedFile = await File(tempPath)
+          .writeAsBytes(parsedEditBytes);
 
       setState(() {
         _images[index] = editedFile;

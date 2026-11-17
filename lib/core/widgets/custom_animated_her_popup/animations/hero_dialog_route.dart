@@ -2,12 +2,12 @@ part of '../../../../omni_core.dart';
 
 class HeroDialogRoute<T> extends PageRoute<T> {
   HeroDialogRoute({
-    required WidgetBuilder builder,
+    required this._builder,
     required this.barrierBackgroundColor,
     required this.duration,
     super.settings,
     super.fullscreenDialog,
-  }) : _builder = builder;
+  });
 
   final WidgetBuilder _builder;
   final Color barrierBackgroundColor;

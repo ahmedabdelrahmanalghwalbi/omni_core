@@ -151,10 +151,9 @@ class CustomMultiDropdownState extends State<CustomMultiDropdown> {
             size: Size.zero,
             layerLink: layerLink,
             hideOverlay: _hideOverlay,
-            headerStyle:
-                _selectedItems.isNotEmpty
-                    ? widget.selectedStyle
-                    : widget.hintStyle,
+            headerStyle: _selectedItems.isNotEmpty
+                ? widget.selectedStyle
+                : widget.hintStyle,
             hintText: widget.hintText ?? 'Select items',
             listItemStyle: widget.listItemStyle,
             excludeSelected: widget.excludeSelected,
@@ -182,10 +181,9 @@ class CustomMultiDropdownState extends State<CustomMultiDropdown> {
   List<String> get dataItems =>
       widget.items
           ?.map(
-            (element) =>
-                (element[widget.nameKey] is Map)
-                    ? (element[widget.nameKey][widget.nameMapKey]).toString()
-                    : element[widget.nameKey].toString(),
+            (element) => (element[widget.nameKey] is Map)
+                ? (element[widget.nameKey][widget.nameMapKey]).toString()
+                : element[widget.nameKey].toString(),
           )
           .toList() ??
       [];
@@ -263,8 +261,9 @@ class CustomMultiDropdownState extends State<CustomMultiDropdown> {
               size: size,
               layerLink: layerLink,
               hideOverlay: hideCallback,
-              headerStyle:
-                  _selectedItems.isNotEmpty ? selectedStyle : hintStyle,
+              headerStyle: _selectedItems.isNotEmpty
+                  ? selectedStyle
+                  : hintStyle,
               hintText: hintText,
               listItemStyle: widget.listItemStyle,
               borderRadius: widget.borderRadius,
@@ -279,50 +278,49 @@ class CustomMultiDropdownState extends State<CustomMultiDropdown> {
           child: (showCallback) {
             return CompositedTransformTarget(
               link: layerLink,
-              child:
-                  widget.basicWidget != null
-                      ? InkWell(
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          showCallback();
-                        },
-                        child: widget.basicWidget,
-                      )
-                      : _MultiSelectDropDownField(
-                        onItemRemoved: (item) {
-                          setState(() {
-                            _selectedItems.remove(item);
-                          });
-                          widget.onChanged?.call(_selectedItems);
-                        },
-                        selectedItemChipBackgroundColor:
-                            widget.selectedItemChipBackgroundColor,
-                        label: widget.label,
-                        labelStyle: widget.labelStyle,
-                        labelText: widget.labelText,
-                        onRemoveClicked: _clearSelection,
-                        isItemsNullOrEmpty: dataItems.isEmpty,
-                        selectedItems: _selectedItems,
-                        nameKey: widget.nameKey,
-                        nameMapKey: widget.nameMapKey,
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          showCallback();
-                        },
-                        style: selectedStyle,
-                        borderRadius: widget.borderRadius,
-                        borderSide: widget.borderSide,
-                        errorBorderSide: widget.errorBorderSide,
-                        errorStyle: widget.errorStyle,
-                        errorText: widget.errorText,
-                        hintStyle: hintStyle,
-                        hintText: hintText,
-                        prefixIcon: widget.fieldPrefixIcon,
-                        suffixIcon: widget.fieldSuffixIcon,
-                        fillColor: widget.fillColor,
-                        contentPadding: widget.contentPadding,
-                        chipBuilder: widget.chipBuilder,
-                      ),
+              child: widget.basicWidget != null
+                  ? InkWell(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        showCallback();
+                      },
+                      child: widget.basicWidget,
+                    )
+                  : _MultiSelectDropDownField(
+                      onItemRemoved: (item) {
+                        setState(() {
+                          _selectedItems.remove(item);
+                        });
+                        widget.onChanged?.call(_selectedItems);
+                      },
+                      selectedItemChipBackgroundColor:
+                          widget.selectedItemChipBackgroundColor,
+                      label: widget.label,
+                      labelStyle: widget.labelStyle,
+                      labelText: widget.labelText,
+                      onRemoveClicked: _clearSelection,
+                      isItemsNullOrEmpty: dataItems.isEmpty,
+                      selectedItems: _selectedItems,
+                      nameKey: widget.nameKey,
+                      nameMapKey: widget.nameMapKey,
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
+                        showCallback();
+                      },
+                      style: selectedStyle,
+                      borderRadius: widget.borderRadius,
+                      borderSide: widget.borderSide,
+                      errorBorderSide: widget.errorBorderSide,
+                      errorStyle: widget.errorStyle,
+                      errorText: widget.errorText,
+                      hintStyle: hintStyle,
+                      hintText: hintText,
+                      prefixIcon: widget.fieldPrefixIcon,
+                      suffixIcon: widget.fieldSuffixIcon,
+                      fillColor: widget.fillColor,
+                      contentPadding: widget.contentPadding,
+                      chipBuilder: widget.chipBuilder,
+                    ),
             );
           },
         ),

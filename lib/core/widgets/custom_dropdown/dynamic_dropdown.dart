@@ -15,12 +15,11 @@ class DynamicDropdownItemsPage {
 /// `null` (or throw) to signal a failed load; the overlay then shows a retry
 /// state. Cascading/dependent behavior is achieved by capturing the parent
 /// value inside the loader closure.
-typedef DynamicDropdownItemsLoader =
-    Future<DynamicDropdownItemsPage?> Function(
-      int offset,
-      int limit,
-      String? search,
-    );
+typedef DynamicDropdownItemsLoader = Future<DynamicDropdownItemsPage?> Function(
+  int offset,
+  int limit,
+  String? search,
+);
 
 /// A dropdown for dynamic (API-driven) data that matches [CustomDropdown]'s
 /// look, feel and behavior: same anchored overlay, animations, styling and

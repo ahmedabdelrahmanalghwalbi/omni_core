@@ -272,7 +272,8 @@ class DerivedValueConfigModel {
       ? const []
       : <String>{
           if (sourceField?.isNotEmpty ?? false) sourceField!,
-          if (calculation?.fieldKey?.isNotEmpty ?? false) calculation!.fieldKey!,
+          if (calculation?.fieldKey?.isNotEmpty ?? false)
+            calculation!.fieldKey!,
           ...operands,
         }.toList();
 
@@ -365,8 +366,7 @@ class DerivedValueFormFieldModel extends InputFormFieldModel<Object?, Object?> {
 
   /// Whether the technician picks this field's value from a list rather than
   /// the engine deriving it.
-  bool get hasSelectableDefault =>
-      derivedConfig?.hasSelectableDefault ?? false;
+  bool get hasSelectableDefault => derivedConfig?.hasSelectableDefault ?? false;
 
   /// The configured default, as the type the field renders and submits: a
   /// number when the field is numeric, otherwise the value as configured.

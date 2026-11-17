@@ -16,7 +16,7 @@ abstract class ToastUtils {
       autoCloseDuration: Duration(seconds: autoCloseDurationInSeconds),
       animationDuration: const Duration(milliseconds: 700),
       showProgressBar: true,
-      progressBarTheme: ProgressIndicatorThemeData(
+      progressBarTheme: legacy_material.ProgressIndicatorThemeData(
         color: Colors.white,
         strokeWidth: 1.0,
         borderRadius: const BorderRadius.all(Radius.circular(4.0)),
