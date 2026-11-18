@@ -1,3 +1,8 @@
+## 2.0.1
+
+* Completed the MIT `LICENSE` text so pub.dev detects the license.
+* Added the `repository` field and a clearer package description to `pubspec.yaml`.
+
 ## 2.0.0
 
 * **Breaking:** migrated from the deprecated SDK libraries `package:flutter/material.dart` and `package:flutter/cupertino.dart` to `package:material_ui` and `package:cupertino_ui`. Public APIs now take `material_ui` types (for example `ButtonStyle` and `InputDecoration`), and widgets resolve `Material`, `Theme` and `MaterialLocalizations` from the `material_ui` tree. This fixes `No Material widget found` and lost theming when omni_core widgets are used in apps built with `material_ui`.
@@ -15,7 +20,3 @@
 ## 1.3.0
 
 * Form Builder: new Dynamic Dropdown field (`FormFieldType.dynamicDropdown`). Options are fetched from the backend form-entities endpoint through a host-provided `DynamicDropdownOptionsFetcher`, with server-side search, infinite-scroll pagination, retry on failure, and dependent (parent/child) dropdown support.
-
-## 0.0.1
-
-* TODO: Describe initial release.

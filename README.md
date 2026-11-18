@@ -4,7 +4,7 @@
 
 **A production-ready Flutter foundation: networking, push notifications, device utilities, reusable UI, and a schema-driven dynamic form engine, all in one package.**
 
-[![Version](https://img.shields.io/badge/version-2.0.0-0A66C2?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.0.1-0A66C2?style=for-the-badge)](CHANGELOG.md)
 [![Dart](https://img.shields.io/badge/Dart-%5E3.13.0-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.47.0-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Material](https://img.shields.io/badge/UI-material__ui-757575?style=for-the-badge)](#material-ui-setup)
@@ -177,7 +177,7 @@ Add the package and `material_ui` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  omni_core: ^2.0.0
+  omni_core: ^2.0.1
   material_ui: ^1.11.1
 ```
 
