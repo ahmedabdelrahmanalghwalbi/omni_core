@@ -1,6 +1,6 @@
 name: omni_core
 description: "A Flutter foundation package: Dio networking, push notifications, device utilities, reusable widgets, and a schema-driven dynamic form builder."
-version: 2.0.1
+version: 2.0.2
 repository: https://github.com/ahmedabdelrahmanalghwalbi/omni_core
 
 environment:

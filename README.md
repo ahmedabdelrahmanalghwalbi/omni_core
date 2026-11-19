@@ -84,7 +84,7 @@
 <td width="50%" valign="top">
 
 ### Platform services
-- **Firebase Cloud Messaging** lifecycle (permissions, FID registration and refresh, listeners)
+- **Firebase Cloud Messaging** lifecycle (permissions, FCM token registration and refresh, listeners)
 - App icon **badge** management
 - **Location**, **camera** and permission flows with user-facing dialogs
 - Reverse **geocoding** with provider fallback
@@ -314,7 +314,6 @@ Follow these rules in the host app:
 | --- | --- |
 | Material types moved to `material_ui` | Switch the app to `material_ui` and complete the [Material UI setup](#material-ui-setup). Values passed into omni_core APIs (for example `ButtonStyle` from `ElevatedButton.styleFrom`) must be `material_ui` types, or they won't compile. |
 | `HttpApiService` removed | Use `DioApiService`. The `http`, `http_parser` and `mime` dependencies are gone too, so add them to your app if you used them directly. |
-| Push notifications use the Firebase Installation ID | `registerDeviceTokenToServerMethod` now receives the FID instead of an FCM registration token. Your backend must send pushes to the FID through FCM direct send. See [Push notifications](#push-notifications). |
 | Higher minimums | Dart `^3.13.0`, Flutter `>= 3.47.0`, Android `minSdk` 24, iOS 15.0. |
 | Dependencies upgraded | `firebase_core` 5, `firebase_messaging` 17, Syncfusion 35, `app_settings` 9, `android_id` 1, `shimmer` 4. Align any of these that your app also depends on directly. |
 
@@ -501,21 +500,21 @@ Use `cancelAllRequests()` to abort everything, for example on logout.
 
 ## Push notifications
 
-`PushNotificationService` handles the Firebase Cloud Messaging lifecycle with the `firebase_messaging` 17 registration APIs (`register`, `onRegistered`, `unregister`). You supply three callbacks; the service handles the rest.
+`PushNotificationService` handles the Firebase Cloud Messaging lifecycle with the FCM registration token APIs (`getToken`, `onTokenRefresh`, `deleteToken`). You supply three callbacks; the service handles the rest.
 
 ```mermaid
 flowchart LR
     A["init()"] --> B{"Permission<br/>granted?"}
     B -- No --> X["Log warning<br/>and stop"]
     B -- Yes --> C["Configure foreground<br/>presentation"]
-    C --> D["Listen to onRegistered,<br/>then register()"]
-    D --> E["registerDeviceTokenToServerMethod<br/><sub>with the FID, and again on every FID change</sub>"]
+    C --> D["Listen to onTokenRefresh,<br/>then getToken()"]
+    D --> E["registerDeviceTokenToServerMethod<br/><sub>with the FCM token, and again on every refresh</sub>"]
     D --> F["Listen for messages"]
     F --> G["onReceiveNotification"]
 ```
 
 > [!IMPORTANT]
-> `notificationDeviceToken` is the **Firebase Installation ID (FID)**, not an FCM registration token. Your backend must send to it through FCM direct send. Treat it as the device's current ID: when a new one arrives for the same device, replace the stored value rather than adding a second record.
+> `notificationDeviceToken` is the **FCM registration token**. Treat it as the device's current token: when a refreshed one arrives for the same device, replace the stored value rather than adding a second record.
 
 ```dart
 final pushService = PushNotificationService(
@@ -534,8 +533,8 @@ await pushService.init();
 
 | Method | Description |
 | --- | --- |
-| `init()` | Request permission, configure presentation, register with FCM and keep the backend in sync with the FID, start listeners. Safe to call again after logging in. |
-| `unRegisterNotificaitonDeviceToken()` | Call your backend's unregister callback first; only if it returns `true`, stop syncing FID changes and unregister from FCM. Call on logout. |
+| `init()` | Request permission, configure presentation, send the FCM token to the backend and resend it on every refresh, start listeners. Safe to call again after logging in. |
+| `unRegisterNotificaitonDeviceToken()` | Call your backend's unregister callback first; only if it returns `true`, stop syncing token refreshes and delete the FCM token. Call on logout. |
 | `getNotificationPermissionStatus()` | Whether notifications are currently authorized |
 
 Badge control is available through `NotificationBadgeUtils`:
@@ -952,7 +951,7 @@ CustomElevatedButton(
 | `IApiServiceHelpers` | Host-implemented headers, auth and error mapping |
 | `DioApiCancelTokenManagerService` | Per-page cancel token registry |
 | `ApiLogger` | Request / response / error logging |
-| `PushNotificationService` | FCM lifecycle and FID registration |
+| `PushNotificationService` | FCM lifecycle and token registration |
 | `InternetConnectionService` | Connectivity checks |
 | `OperationResult<T>`, `ApiStatus` | Result types |
 | `RequestContentType`, `RequestAcceptanceType`, `RequestCacheTypes` | Request enums |
@@ -1075,11 +1074,11 @@ Those dependencies still use the legacy Material library. Wrap the app in `Mater
 </details>
 
 <details>
-<summary><strong>Push notifications stopped arriving after upgrading to 2.0</strong></summary>
+<summary><strong>Device token registration fails with "API disabled" on Android</strong></summary>
 
 <br/>
 
-Your backend is probably still sending to an FCM registration token. Since 2.0, `registerDeviceTokenToServerMethod` delivers the Firebase Installation ID, and the backend must send to it through FCM direct send. See [Push notifications](#push-notifications).
+omni_core 2.0.0 and 2.0.1 registered devices with the Firebase Installation ID API, which Android only enables when the app opts in through its manifest. Upgrade to 2.0.2 or later, which uses the FCM registration token again and needs no manifest change.
 
 </details>
 

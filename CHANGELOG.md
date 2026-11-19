@@ -1,3 +1,7 @@
+## 2.0.2
+
+* `PushNotificationService` is back on the FCM registration token flow (`getToken`/`onTokenRefresh`/`deleteToken`). `registerDeviceTokenToServerMethod` receives the FCM registration token again, as in 1.x, and is called again whenever the token refreshes. This fixes `API disabled` errors on Android for apps that have not opted in to Firebase Installation ID registration, and no backend change is needed.
+
 ## 2.0.1
 
 * Completed the MIT `LICENSE` text so pub.dev detects the license.
